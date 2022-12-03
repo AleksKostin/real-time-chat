@@ -1,12 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import axios from 'axios';
+import cn from 'classnames';
+import { useNavigate } from 'react-router-dom';
+import { routes } from '../routes.js';
+import { useAuth } from '../hook/useAuth.jsx';
 
 const LoginForm = () => {
+  const [isValid, setIsValid] = useState(true); 
+  const { signIn } = useAuth();
+  const navigate = useNavigate();
+
   const validationSchema = yup.object().shape({
     username: yup.string().required(),
     password: yup.string().required(),
-  })
+  });
+
+  const inputFildsClass = cn('form-control', !isValid && 'is-invalid');
 
   const formik = useFormik({
     initialValues: {
@@ -14,8 +25,18 @@ const LoginForm = () => {
       password: '',
     },
     validationSchema,
-    onSubmit: values => {
-      console.log(values);
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post(routes.loginPath(), values);
+        signIn(response.data);
+        navigate('/');
+      } catch (e) {
+        if (axios.isAxiosError) {
+          if (e.response.status === 401) {
+            setIsValid(false)
+          }
+        };
+      }
     },
   })
   return (
@@ -29,7 +50,7 @@ const LoginForm = () => {
             required
             placeholder='Ваш ник'
             id='username'
-            className='form-control'
+            className={inputFildsClass}
             value={formik.values.username}
             onChange={formik.handleChange}
             autoFocus
@@ -47,14 +68,17 @@ const LoginForm = () => {
             placeholder='Пароль'
             type='password'
             id='password'
-            className='form-control'
+            className={inputFildsClass}
             value={formik.values.password}
             onChange={formik.handleChange}
           />
           {formik.touched.password && formik.errors.password ? (
-            <div>{formik.errors.password}</div>
+            <div className="invalid-tooltip">Неверные имя пользователя или пароль</div>
           ) : null}
           <label className='form-label' htmlFor='password'>Пароль</label>
+          {!isValid ? (
+            <div className="invalid-tooltip">Неверные имя пользователя или пароль</div>
+          ) : null}
         </div>
         <button type='submit' className='w-100 mb-3 btn btn-outline-primary'>Войти</button>
       </form>
