@@ -6,6 +6,6 @@ const SignUpPage = () => {
       SignUp
     </div>
   );
-};
+}
 
 export default SignUpPage;

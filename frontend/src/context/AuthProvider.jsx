@@ -1,12 +1,9 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { AuthContext } from './index.js';
 
 const AuthProvider = ({ children }) => {
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const [user, setUser] = useState(currentUser ? { username: currentUser.username } : null);
-
-  console.log(currentUser)
 
   const signIn = (newUser) => {
     localStorage.setItem('user', JSON.stringify(newUser));
@@ -23,6 +20,6 @@ const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
 export default AuthProvider;
