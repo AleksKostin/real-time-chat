@@ -1,50 +1,81 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Button, Dropdown, ButtonGroup } from 'react-bootstrap';
+import { PlusSquare } from 'react-bootstrap-icons';
 import cn from 'classnames';
 import { selectors as channelsSelectors } from '../slices/channelsSlice.js';
 import { actions as channelsActions} from '../slices/channelsSlice.js';
+import { actions as modalsActions } from '../slices/modalsSlice.js';
 
 const Channels = () => {
   const dispatch = useDispatch();
 
-  const channels = useSelector(channelsSelectors.selectAll);
+  const channels = useSelector((state) => channelsSelectors.selectAll(state));
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
 
-  const handleClick = (id) => {
+  const handleChooseChannel = (id) => {
     dispatch(channelsActions.setCurrentCnannelId(id));
+  };
+
+  const handleAddChannel = () => { 
+    dispatch(modalsActions.setTypeModal({ nameModal: 'add' }));
+  };
+
+  const handleRemoveChannel = (id) => { 
+    dispatch(modalsActions.setTypeModal({ nameModal: 'remove', channelId: id }));
+  };
+
+  const handleRenameChannel = (id) => {
+    dispatch(modalsActions.setTypeModal({ nameModal: 'rename', channelId: id }));
   };
 
   return (
     <div className="col-4 col-md-2 border-end pt-5 px-0 bg-light">
       <div className="d-flex justify-content-between mb-2 ps-4 pe-2">
         <span>Каналы</span>
-        <button type="button" className="p-0 text-primary btn btn-group-vertical">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
-            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
-            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-          </svg>
+        <Button
+          type="button"
+          onClick={() => handleAddChannel()}
+          variant="group-vertical"
+          className="p-0 text-primary border-0"
+        >
+          <PlusSquare size={20} />
           <span className="visually-hidden">+</span>
-        </button>
+        </Button>
       </div>
       <ul className="nav flex-column nav-pills nav-fill px-2">
         {channels.map((channel) => (
           <li key={channel.id} className="nav-item w-100">
-            {channel.removable ? (
-              <div role="group" className="d-flex dropdown btn-group">
-                <button type="button" className="w-100 rounded-0 text-start text-truncate btn">
-                  <span className="me-1">#</span>
-                  {channel.name}
-                </button>
-                <button type="button" id="react-aria486610400-2" aria-expanded="false" className="flex-grow-0 dropdown-toggle dropdown-toggle-split btn">
-                  <span className="visually-hidden">Управление каналом</span>
-                </button>
-              </div>
-            )
+            {channel.removable 
+              ? (
+                <Dropdown as={ButtonGroup} className="d-flex">
+                  <Button
+                    type="button"
+                    className="w-100 rounded-0 text-start text-truncate border-0"
+                    onClick={() => handleChooseChannel(channel.id)}
+                    variant={channel.id === currentChannelId && 'secondary'}
+                  >
+                    <span className="me-1">#</span>
+                    {channel.name}
+                  </Button>
+                  <Dropdown.Toggle
+                    split
+                    className="flex-grow-0 border-0"
+                    variant={channel.id === currentChannelId && 'secondary'}
+                  >
+                    <span className="visually-hidden">Управление каналом</span>
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => handleRemoveChannel(channel.id)}>Удалить</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleRenameChannel(channel.id)}>Переименовать</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              )
               : (
                 <button
                   type="button"
-                  onClick={() => handleClick(channel.id)}
-                  className={cn('w-100', 'rounded-0', 'text-start', 'btn', {
+                  onClick={() => handleChooseChannel(channel.id)}
+                  className={cn('w-100', 'rounded-0', 'text-start', 'btn', 'border-0',  {
                     'btn-secondary': channel.id === currentChannelId,
                   })}
                 >

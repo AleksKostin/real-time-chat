@@ -13,8 +13,8 @@ const LoginForm = () => {
   const navigate = useNavigate();
 
   const validationSchema = yup.object().shape({
-    username: yup.string(),
-    password: yup.string(),
+    username: yup.string().trim(),
+    password: yup.string().trim(),
   });
 
   const inputFildsClass = cn('form-control', !isValid && 'is-invalid');

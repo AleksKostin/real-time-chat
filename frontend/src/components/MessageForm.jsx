@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import { useChat } from '../hooks/useChat.js';
 import { useAuth } from '../hooks/useAuth.js';
 import { selectors as channelsSelectors } from '../slices/channelsSlice.js';
+import { useEffect } from 'react';
 
 const MessageForm = () => {
   const chat = useChat();
@@ -14,10 +15,14 @@ const MessageForm = () => {
     const currentChannelId = state.channels.currentChannelId;
     return channelsSelectors.selectById(state, currentChannelId);
   });
+  const inputRef = useRef()
 
+  useEffect(() => {
+    inputRef.current.focus();
+  }, [currentChannel]);
 
   const validationSchema = yup.object().shape({
-    body: yup.string(),
+    body: yup.string().trim(),
   });
 
   const formik = useFormik({
@@ -44,13 +49,14 @@ const MessageForm = () => {
       <div className="input-group has-validation">
         <input
           name="body"
+          ref={inputRef}
           aria-label="Новое сообщение"
           placeholder="Введите сообщение..."
           className="border-0 p-0 ps-2 form-control"
           value={formik.values.body}
           onChange={formik.handleChange}
         />
-        <button type="submit" disabled={formik.values.body.length === 0} className="btn btn-group-vertical">
+        <button type="submit" disabled={formik.values.body.length === 0} className="btn btn-group-vertical border-0">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
             <path 
               fill-rule="evenodd"
