@@ -9,6 +9,6 @@ const RequareAuth = ({ children }) => {
     return !user ? <Navigate to="/login" /> : children;
   }
   return !user ? children : <Navigate to="/" />;
-}
+};
 
 export default RequareAuth;

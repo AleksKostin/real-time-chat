@@ -5,6 +5,7 @@ import {
   Route,
 } from 'react-router-dom';
 // import { ToastContainer } from 'react-toastify';
+import { useSelector } from 'react-redux';
 import Navbar from './Navbar.jsx';
 import AuthProvider from '../context/AuthProvider.jsx';
 import RequareAuth from '../hoc/RequareAuth.jsx';
@@ -14,11 +15,13 @@ import NotFoundPage from '../pages/NotFoundPage.jsx';
 import SignUpPage from '../pages/SignUpPage.jsx';
 
 const App = () => {
+  const fetching = useSelector((state) => state.channels.loadingStatus);
+
   return (
     <AuthProvider>
       <BrowserRouter>
         <div className="d-flex flex-column h-100">
-          <Navbar />
+          {fetching !== 'loading' && <Navbar />}
           <Routes>
             <Route
               path="/"

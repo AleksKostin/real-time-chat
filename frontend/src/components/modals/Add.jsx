@@ -58,6 +58,7 @@ const Add = () => {
           <Form.Control
             className='mb-2'
             name='name'
+            autoComplete='username'
             id='name'
             value={formik.values.name}
             onChange={formik.handleChange}

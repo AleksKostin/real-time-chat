@@ -17,7 +17,7 @@ const LoginForm = () => {
     password: yup.string().trim(),
   });
 
-  const inputFildsClass = cn('form-control', !isValid && 'is-invalid');
+  const inputFieldsClass = cn('form-control', !isValid && 'is-invalid');
 
   const formik = useFormik({
     initialValues: {
@@ -49,7 +49,7 @@ const LoginForm = () => {
           required
           placeholder="Ваш ник"
           id="username"
-          className={inputFildsClass}
+          className={inputFieldsClass}
           value={formik.values.username}
           onChange={formik.handleChange}
           autoFocus
@@ -67,7 +67,7 @@ const LoginForm = () => {
           placeholder="Пароль"
           type="password"
           id="password"
-          className={inputFildsClass}
+          className={inputFieldsClass}
           value={formik.values.password}
           onChange={formik.handleChange}
         />

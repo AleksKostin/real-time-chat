@@ -20,8 +20,8 @@ const HomePage = () => {
   return (
     fetching === 'loading'
       ? (
-        <div className='justify-content-center align-content-center h-100 d-flex'>
-          <Spinner animation="grow" variant="primary">
+        <div className='justify-content-center align-self-center flex-column h-100 d-flex'>
+          <Spinner animation="grow" variant="secondary">
             <span className="visually-hidden">Loading...</span>
           </Spinner>
         </div>
