@@ -56,14 +56,17 @@ const SignUpForm = () => {
         signIn(response.data);
         navigate('/');
       } catch (e) {
+        console.log(e)
         if (axios.isAxiosError) {
           if (e.response.status === 409) {
             setRegError(t('errors.registration'));
           } else {
             toast.error(t('errors.network'));
           }
+        } else {
+          toast.error(t('errors.unknown'));
+          throw e
         }
-        toast.error(t('error.unknown'));
       }
     }
   });
@@ -75,7 +78,7 @@ const SignUpForm = () => {
         <Form.Control
           placeholder={t('regForm.username')}
           name="username"
-          autocomplete="username"
+          autoComplete="username"
           required
           id="username"
           value={formik.values.username}
@@ -84,7 +87,7 @@ const SignUpForm = () => {
           isInvalid={(formik.errors.username && formik.touched.username) || !!regError}
           autoFocus
         />
-        <Form.Label htmFor="username">{t('regForm.username')}</Form.Label>
+        <Form.Label htmlFor="username">{t('regForm.username')}</Form.Label>
         <Form.Control.Feedback type="invalid" tooltip placement="right">
           {formik.errors.username}
         </Form.Control.Feedback>
@@ -97,7 +100,7 @@ const SignUpForm = () => {
           required
           type="password"
           id="password"
-          autocomplete="new-password"
+          autoComplete="new-password"
           value={formik.values.password}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -113,7 +116,7 @@ const SignUpForm = () => {
           placeholder={t('regForm.confirmPassword')}
           name="confirmPassword"
           required
-          autocomplete="new-password"
+          autoComplete="new-password"
           type="password"
           id="confirmPassword"
           value={formik.values.confirmPassword}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import i18next from 'i18next';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
+import leoProfanity from 'leo-profanity';
 
 import store from './slices/index.js';
 import ChatApiProvider from './context/ChatApiProvider.jsx';
@@ -10,6 +11,10 @@ import resources from './locales/index.js'
 
 const init = async (socket) => {
   const i18n = i18next.createInstance();
+
+  leoProfanity.clearList();
+  leoProfanity.add(leoProfanity.getDictionary('en'));
+  leoProfanity.add(leoProfanity.getDictionary('ru'));
 
   await i18n
     .use(initReactI18next)

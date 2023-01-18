@@ -9,6 +9,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import { toast } from 'react-toastify';
+import leoProfanity from 'leo-profanity';
 
 import { selectors as channelsSelectors } from '../../slices/channelsSlice.js';
 import { useChat } from '../../hooks/useChat.js';
@@ -46,7 +47,8 @@ const Add = () => {
     validationSchema,
     onSubmit: (values) => {
       const newChannel = values.name;
-      chat.addChannel({ name: newChannel });
+      const cleanName = leoProfanity.clean(newChannel, '*', 1);
+      chat.addChannel({ name: cleanName });
       handleClose();
       toast.success(t('modalAdd.success'));
     },

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from "react-i18next";
+import leoProfanity from 'leo-profanity';
 
 import { useChat } from '../hooks/useChat.js';
 import { useAuth } from '../hooks/useAuth.js';
@@ -36,10 +37,11 @@ const MessageForm = () => {
         return;
       }
       const { body } = values;
+      const cleanMessage = leoProfanity.clean(body, '*', 1);
       const channelId = currentChannel.id;
       const username = user.username;
       const data = {
-        body,
+        body: cleanMessage,
         channelId,
         username,
       };

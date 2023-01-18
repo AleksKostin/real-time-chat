@@ -9,6 +9,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from "react-i18next";
 import { toast } from 'react-toastify';
+import leoProfanity from 'leo-profanity';
 
 import { useChat } from '../../hooks/useChat.js';
 import { actions as modalsActions } from '../../slices/modalsSlice.js';
@@ -48,7 +49,8 @@ const Rename = () => {
     validationSchema,
     onSubmit: (values) => {
       const updatedName = values.name;
-      chat.renameChannel({ id: currentChannelId, name: updatedName });
+      const cleanName = leoProfanity.clean(updatedName, '*', 1);
+      chat.renameChannel({ id: currentChannelId, name: cleanName });
       handleClose();
       toast.success(t('modalRename.success'));
     },

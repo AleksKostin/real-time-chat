@@ -35,14 +35,17 @@ const LoginForm = () => {
         signIn(response.data);
         navigate('/');
       } catch (e) {
+        console.log(e)
         if (axios.isAxiosError) {
           if (e.response.status === 401) {
             setIsValid(false);
           } else {
             toast.error(t('errors.network'));
           }
+        } else {
+          toast.error(t('errors.unknown'));
+          throw e;
         }
-        toast.error(t('error.unknown'));
       }
     },
   });
@@ -61,9 +64,6 @@ const LoginForm = () => {
           onChange={formik.handleChange}
           autoFocus
         />
-        {/*formik.touched.username && formik.errors.username ? (
-          <div>{formik.errors.username}</div>
-        ) : null*/}
         <label htmlFor="username">{t('logForm.username')}</label>
       </div>
       <div className="form-floating mb-4">
@@ -78,9 +78,6 @@ const LoginForm = () => {
           value={formik.values.password}
           onChange={formik.handleChange}
         />
-        {/*formik.touched.password && formik.errors.password ? (
-          <div className="invalid-tooltip">Неверные имя пользователя или пароль</div>
-        ) : null*/}
         <label className="form-label" htmlFor="password">{t('logForm.password')}</label>
         {!isValid
           ? (
