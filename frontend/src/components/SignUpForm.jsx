@@ -1,35 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Button,
   Form,
 } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import axios from 'axios';
+import { useTranslation } from "react-i18next";
+
 import { routes } from '../routes.js';
 import { useAuth } from '../hooks/useAuth.js';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 const SignUpForm = () => {
+  const { t } = useTranslation();
   const { signIn } = useAuth();
   const navigate = useNavigate();
+  const [regError, setRegError] = useState(false);
+
 
   const validationSchema = yup.object().shape({
     username: yup
       .string()
       .trim()
-      .min(3, 'От 3 до 20 символов')
-      .max(20, 'От 3 до 20 символов')
-      .required('Обязательное поле'),
+      .min(3, t('errors.minMaxSymbol'))
+      .max(20, t('errors.minMaxSymbol'))
+      .required(t('errors.requared')),
     password: yup
       .string()
       .trim()
-      .min(6, 'Не менее 6 символов')
-      .required('Обязательное поле'),
+      .min(6, t('errors.minSymbol'))
+      .required(t('errors.requared')),
     confirmPassword: yup
       .string()
       .trim()
-      .oneOf([yup.ref('password'), null], 'Пароли должны совпадать'),
+      .oneOf([yup.ref('password'), null], t('errors.confirmPassword')),
   });
 
   const formik = useFormik({
@@ -41,6 +46,7 @@ const SignUpForm = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
+        setRegError(false);
         const newUser = {
           username: values.username,
           password: values.password,
@@ -49,6 +55,11 @@ const SignUpForm = () => {
         signIn(response.data);
         navigate('/');
       } catch (e) {
+        if (axios.isAxiosError) {
+          if (e.response.status === 409) {
+            setRegError(t('errors.registration'));
+          }
+        }
         console.log(e)
       }
     }
@@ -56,10 +67,10 @@ const SignUpForm = () => {
 
   return (
     <Form className="w-50" onSubmit={formik.handleSubmit}>
-      <h1 className="text-center mb-4">Регистрация</h1>
+      <h1 className="text-center mb-4">{t('regForm.header')}</h1>
       <Form.Floating className="mb-3">
         <Form.Control
-          placeholder="Имя пользователя"
+          placeholder={t('regForm.username')}
           name="username"
           autocomplete="username"
           required
@@ -67,17 +78,17 @@ const SignUpForm = () => {
           value={formik.values.username}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          isInvalid={formik.errors.username && formik.touched.username}
+          isInvalid={(formik.errors.username && formik.touched.username) || !!regError}
           autoFocus
         />
-        <Form.Label htmFor="username">Имя пользователя</Form.Label>
+        <Form.Label htmFor="username">{t('regForm.username')}</Form.Label>
         <Form.Control.Feedback type="invalid" tooltip placement="right">
           {formik.errors.username}
         </Form.Control.Feedback>
       </Form.Floating>
       <Form.Floating className="mb-3">
         <Form.Control
-          placeholder="Пароль"
+          placeholder={t('regForm.password')}
           name="password"
           aria-describedby="passwordHelpBlock"
           required
@@ -87,16 +98,16 @@ const SignUpForm = () => {
           value={formik.values.password}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          isInvalid={formik.errors.password && formik.touched.password}
+          isInvalid={(formik.errors.password && formik.touched.password) || !!regError}
         />
         <Form.Control.Feedback type="invalid" tooltip placement="right">
           {formik.errors.password}
         </Form.Control.Feedback>
-        <Form.Label htmlFor="password">Пароль</Form.Label>
+        <Form.Label htmlFor="password">{t('regForm.password')}</Form.Label>
       </Form.Floating>
       <Form.Floating className="mb-4">
         <Form.Control
-          placeholder="Подтвердите пароль"
+          placeholder={t('regForm.confirmPassword')}
           name="confirmPassword"
           required
           autocomplete="new-password"
@@ -105,15 +116,17 @@ const SignUpForm = () => {
           value={formik.values.confirmPassword}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          isInvalid={formik.errors.confirmPassword && formik.touched.confirmPassword}
+          isInvalid={(formik.errors.confirmPassword && formik.touched.confirmPassword) 
+            || !!regError
+          }
         />
         <Form.Control.Feedback type="invalid" tooltip placement="right">
-          {formik.errors.confirmPassword}
+          {!!regError ? regError : formik.errors.confirmPassword}
         </Form.Control.Feedback>
-        <Form.Label htmlFor="confirmPassword">Подтвердите пароль</Form.Label>
+        <Form.Label htmlFor="confirmPassword">{t('regForm.confirmPassword')}</Form.Label>
       </Form.Floating>
       <Button type="submit" variant="outline-primary" className="w-100">
-        Зарегистрироваться
+        {t('regForm.submit')}
       </Button>
     </Form>
   );

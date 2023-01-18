@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { 
@@ -7,12 +7,14 @@ import {
   Form, 
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from "react-i18next";
+
 import { selectors as channelsSelectors } from '../../slices/channelsSlice.js';
 import { useChat } from '../../hooks/useChat.js';
 import { actions as modalsActions} from '../../slices/modalsSlice.js';
-import { useEffect } from 'react';
 
 const Add = () => {
+  const { t } = useTranslation();
   const chat = useChat();
   const dispatch = useDispatch();
   const channels = useSelector((state) => channelsSelectors.selectAll(state));
@@ -30,10 +32,10 @@ const Add = () => {
     name: yup
       .string()
       .trim()
-      .min(3, 'От 3 до 20 символов')
-      .max(20, 'От 3 до 20 символов')
-      .notOneOf(channels.map((ch) => ch.name), 'Должно быть уникальным')
-      .required('Обязательное поле'),
+      .min(3, t('errors.minMaxSymbol'))
+      .max(20, t('errors.minMaxSymbol'))
+      .notOneOf(channels.map((ch) => ch.name), t('errors.unique'))
+      .required(t('errors.requared')),
   });
 
   const formik = useFormik({
@@ -51,7 +53,7 @@ const Add = () => {
   return (
     <Modal show centered onHide={() => handleClose()}>
       <Modal.Header closeButton>
-        <Modal.Title>Добавить канал</Modal.Title>
+        <Modal.Title>{t('modalAdd.header')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={formik.handleSubmit}>
@@ -65,7 +67,7 @@ const Add = () => {
             isInvalid={formik.errors.name && formik.touched.name}
             ref={inputRef}
           />
-          <Form.Label htmlFor='name' className='visually-hidden'>Имя канала</Form.Label>
+          <Form.Label htmlFor='name' className='visually-hidden'>{t('modalAdd.name')}</Form.Label>
           <Form.Control.Feedback type='invalid'>
             {formik.errors.name}
           </Form.Control.Feedback>
@@ -75,10 +77,10 @@ const Add = () => {
               variant='secondary'
               onClick={() => handleClose()}
             >
-              Отменить
+              {t('modalAdd.cancel')}
             </Button>
             <Button type='submit' variant='primary'>
-              Отправить
+              {t('modalAdd.send')}
             </Button>
           </div>
         </Form>

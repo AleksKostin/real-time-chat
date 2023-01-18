@@ -4,10 +4,13 @@ import {
   Button,
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from "react-i18next";
+
 import { useChat } from '../../hooks/useChat.js';
 import { actions as modalsActions } from '../../slices/modalsSlice.js';
 
 const Remove = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const chat = useChat();
   const currentChannelId = useSelector((state) => state.modals.channelId);
@@ -24,20 +27,20 @@ const Remove = () => {
   return (
     <Modal show centered onHide={() => handleClose()}>
       <Modal.Header closeButton>
-        <Modal.Title>Удалить канал</Modal.Title>
+        <Modal.Title>{t('modalRemove.header')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p className='lead'>Уверены?</p>
+        <p className='lead'>{t('modalRemove.sure')}</p>
         <div className='d-flex justify-content-end'>
           <Button
             className='me-2'
             variant='secondary'
             onClick={() => handleClose()}
           >
-            Отменить
+            {t('modalRemove.cancel')}
           </Button>
           <Button type='submit' variant='danger' onClick={() => handleRemove()}>
-            Удалить
+            {t('modalRemove.send')}
           </Button>
         </div>
       </Modal.Body>

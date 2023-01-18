@@ -1,28 +1,29 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { useTranslation } from "react-i18next";
 
 import { useChat } from '../hooks/useChat.js';
 import { useAuth } from '../hooks/useAuth.js';
 import { selectors as channelsSelectors } from '../slices/channelsSlice.js';
-import { useEffect } from 'react';
 
 const MessageForm = () => {
+  const { t } = useTranslation()
   const chat = useChat();
   const { user } = useAuth();
   const currentChannel = useSelector((state) => {
     const currentChannelId = state.channels.currentChannelId;
     return channelsSelectors.selectById(state, currentChannelId);
   });
-  const inputRef = useRef()
+  const inputRef = useRef();
 
   useEffect(() => {
     inputRef.current.focus();
   }, [currentChannel]);
 
   const validationSchema = yup.object().shape({
-    body: yup.string().trim(),
+    body: yup.string().trim().required(),
   });
 
   const formik = useFormik({
@@ -31,6 +32,9 @@ const MessageForm = () => {
     },
     validationSchema,
     onSubmit: (values) => {
+      if (!validationSchema.isValidSync) {
+        return;
+      }
       const { body } = values;
       const channelId = currentChannel.id;
       const username = user.username;
@@ -50,8 +54,8 @@ const MessageForm = () => {
         <input
           name="body"
           ref={inputRef}
-          aria-label="Новое сообщение"
-          placeholder="Введите сообщение..."
+          aria-label={t('messages.new')}
+          placeholder={t('messages.input')}
           className="border-0 p-0 ps-2 form-control"
           value={formik.values.body}
           onChange={formik.handleChange}
@@ -64,7 +68,7 @@ const MessageForm = () => {
             >
             </path>
           </svg>
-          <span className="visually-hidden">Отправить</span>
+          <span className="visually-hidden">{t('messages.send')}</span>
         </button>
       </div>
     </form>

@@ -7,11 +7,14 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { useTranslation } from "react-i18next";
+
 import { useChat } from '../../hooks/useChat.js';
 import { actions as modalsActions } from '../../slices/modalsSlice.js';
 import { selectors as channelsSelectors } from '../../slices/channelsSlice.js';
 
 const Rename = () => {
+  const { t } = useTranslation();
   const chat = useChat();
   const dispatch = useDispatch();
   const inputRef = useRef();
@@ -31,10 +34,10 @@ const Rename = () => {
     name: yup
       .string()
       .trim()
-      .min(3, 'От 3 до 20 символов')
-      .max(20, 'От 3 до 20 символов')
-      .notOneOf(channels.map((ch) => ch.name), 'Должно быть уникальным')
-      .required('Обязательное поле'),
+      .min(3, t('errors.minMaxSymbol'))
+      .max(20, t('errors.minMaxSymbol'))
+      .notOneOf(channels.map((ch) => ch.name), t('errors.unique'))
+      .required(t('errors.requared')),
   });
 
   const formik = useFormik({
@@ -52,7 +55,7 @@ const Rename = () => {
   return (
     <Modal show centered onHide={() => handleClose()}>
       <Modal.Header closeButton>
-        <Modal.Title>Переименовать канал</Modal.Title>
+        <Modal.Title>{t('modalRename.header')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={formik.handleSubmit}>
@@ -65,7 +68,7 @@ const Rename = () => {
             isInvalid={formik.errors.name && formik.touched.name}
             ref={inputRef}
           />
-          <Form.Label htmlFor='name' className='visually-hidden'>Имя канала</Form.Label>
+          <Form.Label htmlFor='name' className='visually-hidden'>{t('modalRename.name')}</Form.Label>
           <Form.Control.Feedback type='invalid'>
             {formik.errors.name}
           </Form.Control.Feedback>
@@ -75,10 +78,10 @@ const Rename = () => {
               variant='secondary'
               onClick={() => handleClose()}
             >
-              Отменить
+              {t('modalRename.cancel')}
             </Button>
             <Button type='submit' variant='primary'>
-              Отправить
+              {t('modalRename.send')}
             </Button>
           </div>
         </Form>
