@@ -5,6 +5,7 @@ import {
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
+import { toast } from 'react-toastify';
 
 import { useChat } from '../../hooks/useChat.js';
 import { actions as modalsActions } from '../../slices/modalsSlice.js';
@@ -22,6 +23,7 @@ const Remove = () => {
   const handleRemove = () => {
     chat.removeChannel({ id: currentChannelId });
     dispatch(modalsActions.setTypeModal({ nameModal: null }));
+    toast.success(t('modalRemove.success'));
   };
 
   return (
@@ -40,7 +42,7 @@ const Remove = () => {
             {t('modalRemove.cancel')}
           </Button>
           <Button type='submit' variant='danger' onClick={() => handleRemove()}>
-            {t('modalRemove.send')}
+            {t('modalRemove.remove')}
           </Button>
         </div>
       </Modal.Body>

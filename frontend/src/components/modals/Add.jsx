@@ -8,6 +8,7 @@ import {
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
+import { toast } from 'react-toastify';
 
 import { selectors as channelsSelectors } from '../../slices/channelsSlice.js';
 import { useChat } from '../../hooks/useChat.js';
@@ -47,6 +48,7 @@ const Add = () => {
       const newChannel = values.name;
       chat.addChannel({ name: newChannel });
       handleClose();
+      toast.success(t('modalAdd.success'));
     },
   });
 

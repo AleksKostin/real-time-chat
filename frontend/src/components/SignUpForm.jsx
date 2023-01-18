@@ -7,6 +7,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
 import { useTranslation } from "react-i18next";
+import { toast } from 'react-toastify';
 
 import { routes } from '../routes.js';
 import { useAuth } from '../hooks/useAuth.js';
@@ -58,9 +59,11 @@ const SignUpForm = () => {
         if (axios.isAxiosError) {
           if (e.response.status === 409) {
             setRegError(t('errors.registration'));
+          } else {
+            toast.error(t('errors.network'));
           }
         }
-        console.log(e)
+        toast.error(t('error.unknown'));
       }
     }
   });

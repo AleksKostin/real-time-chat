@@ -52,18 +52,21 @@ const ru = {
       cancel: 'Отменить',
       send: 'Отправить',
       name: 'Имя канала',
+      success: 'Канал создан',
     },
     modalRemove: {
       header: 'Удалить канал',
       sure: 'Уверены?',
       cancel: 'Отменить',
       remove: 'Удалить',
+      success: 'Канал удален',
     },
     modalRename: {
       header: 'Переименовать канал',
       cancel: 'Отменить',
       send: 'Отправить',
       name: 'Имя канала',
+      success: 'Канал изменен'
     },
     notFound: {
       header: 'Страница не найдена',

@@ -4,8 +4,9 @@ import {
   Routes,
   Route,
 } from 'react-router-dom';
-// import { ToastContainer } from 'react-toastify';
 import { useSelector } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
+
 import Navbar from './Navbar.jsx';
 import AuthProvider from '../context/AuthProvider.jsx';
 import RequareAuth from '../hoc/RequareAuth.jsx';
@@ -50,6 +51,7 @@ const App = () => {
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
+        <ToastContainer />
       </BrowserRouter>
     </AuthProvider>
   );

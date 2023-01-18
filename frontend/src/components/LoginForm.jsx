@@ -5,6 +5,7 @@ import axios from 'axios';
 import cn from 'classnames';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
+import { toast } from 'react-toastify';
 
 import { routes } from '../routes.js';
 import { useAuth } from '../hooks/useAuth.js';
@@ -37,9 +38,11 @@ const LoginForm = () => {
         if (axios.isAxiosError) {
           if (e.response.status === 401) {
             setIsValid(false);
+          } else {
+            toast.error(t('errors.network'));
           }
         }
-        console.log(e);
+        toast.error(t('error.unknown'));
       }
     },
   });

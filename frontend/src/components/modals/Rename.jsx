@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useTranslation } from "react-i18next";
+import { toast } from 'react-toastify';
 
 import { useChat } from '../../hooks/useChat.js';
 import { actions as modalsActions } from '../../slices/modalsSlice.js';
@@ -49,6 +50,7 @@ const Rename = () => {
       const updatedName = values.name;
       chat.renameChannel({ id: currentChannelId, name: updatedName });
       handleClose();
+      toast.success(t('modalRename.success'));
     },
   });
 
