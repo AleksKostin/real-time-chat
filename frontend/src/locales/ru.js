@@ -59,7 +59,7 @@ const ru = {
       sure: 'Уверены?',
       cancel: 'Отменить',
       remove: 'Удалить',
-      success: 'Канал удален',
+      success: 'Канал удалён',
     },
     modalRename: {
       header: 'Переименовать канал',
