@@ -16,7 +16,7 @@ const Navbar = () => {
           <button
             onClick={signOut}
             type="button"
-            class="btn btn-primary"
+            className="btn btn-primary"
           >
             {t('navbar.logOut')}
           </button>
