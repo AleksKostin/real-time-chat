@@ -11,11 +11,8 @@ import App from './components/App.jsx';
 import resources from './locales/index.js'
 import rollbarConfig from './rollbarConfig.js';
 
-
 const init = async (socket) => {
   const i18n = i18next.createInstance();
-  console.log(process.env.REACT_APP_ACCESS_TOKEN)
-  console.log(process.env.NODE_ENV)
 
   leoProfanity.clearList();
   leoProfanity.add(leoProfanity.getDictionary('en'));
