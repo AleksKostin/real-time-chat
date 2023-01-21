@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from 'react';
-import { 
+import {
   Modal,
   Button,
-  Form, 
+  Form,
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import leoProfanity from 'leo-profanity';
 
@@ -22,13 +22,15 @@ const Rename = () => {
   const inputRef = useRef();
   const channels = useSelector((state) => channelsSelectors.selectAll(state));
   const currentChannelId = useSelector((state) => state.modals.channelId);
-  const currentChannel = useSelector((state) => channelsSelectors.selectById(state, currentChannelId));
+  const currentChannel = useSelector((state) => (
+    channelsSelectors.selectById(state, currentChannelId)
+  ));
 
   useEffect(() => {
     inputRef.current.select();
   }, []);
-  
-  const handleClose = () => { 
+
+  const handleClose = () => {
     dispatch(modalsActions.setTypeModal({ nameModal: null }));
   };
 
@@ -64,27 +66,27 @@ const Rename = () => {
       <Modal.Body>
         <Form onSubmit={formik.handleSubmit}>
           <Form.Control
-            className='mb-2'
-            name='name'
-            id='name'
+            className="mb-2"
+            name="name"
+            id="name"
             value={formik.values.name}
             onChange={formik.handleChange}
             isInvalid={formik.errors.name && formik.touched.name}
             ref={inputRef}
           />
-          <Form.Label htmlFor='name' className='visually-hidden'>{t('modalRename.name')}</Form.Label>
-          <Form.Control.Feedback type='invalid'>
+          <Form.Label htmlFor="name" className="visually-hidden">{t('modalRename.name')}</Form.Label>
+          <Form.Control.Feedback type="invalid">
             {formik.errors.name}
           </Form.Control.Feedback>
-          <div className='d-flex justify-content-end'>
+          <div className="d-flex justify-content-end">
             <Button
-              className='me-2'
-              variant='secondary'
+              className="me-2"
+              variant="secondary"
               onClick={() => handleClose()}
             >
               {t('modalRename.cancel')}
             </Button>
-            <Button type='submit' variant='primary'>
+            <Button type="submit" variant="primary">
               {t('modalRename.send')}
             </Button>
           </div>

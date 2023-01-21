@@ -14,4 +14,4 @@ const app = async () => {
   root.render(<React.StrictMode>{vdom}</React.StrictMode>);
 };
 
-app()
+app();

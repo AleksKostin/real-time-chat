@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
 import cn from 'classnames';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import { routes } from '../routes.js';
@@ -15,6 +15,11 @@ const LoginForm = () => {
   const [isValid, setIsValid] = useState(true);
   const { signIn } = useAuth();
   const navigate = useNavigate();
+  const inputRef = useRef();
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   const validationSchema = yup.object().shape({
     username: yup.string().trim(),
@@ -35,7 +40,7 @@ const LoginForm = () => {
         signIn(response.data);
         navigate('/');
       } catch (e) {
-        console.log(e)
+        console.log(e);
         if (axios.isAxiosError) {
           if (e.response.status === 401) {
             setIsValid(false);
@@ -62,7 +67,7 @@ const LoginForm = () => {
           className={inputFieldsClass}
           value={formik.values.username}
           onChange={formik.handleChange}
-          autoFocus
+          ref={inputRef}
         />
         <label htmlFor="username">{t('logForm.username')}</label>
       </div>
@@ -83,9 +88,7 @@ const LoginForm = () => {
           ? (
             <div className="invalid-tooltip">{t('errors.auth')}</div>
           )
-          :
-            null
-        }
+          : null}
       </div>
       <button
         type="submit"
@@ -95,6 +98,6 @@ const LoginForm = () => {
       </button>
     </form>
   );
-}
+};
 
 export default LoginForm;

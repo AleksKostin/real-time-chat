@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
-import { 
+import {
   Button,
   Form,
 } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
+import { useNavigate } from 'react-router-dom';
 import { routes } from '../routes.js';
 import { useAuth } from '../hooks/useAuth.js';
-import { useNavigate } from 'react-router-dom';
 
 const SignUpForm = () => {
   const { t } = useTranslation();
   const { signIn } = useAuth();
   const navigate = useNavigate();
   const [regError, setRegError] = useState(false);
-
 
   const validationSchema = yup.object().shape({
     username: yup
@@ -56,7 +55,7 @@ const SignUpForm = () => {
         signIn(response.data);
         navigate('/');
       } catch (e) {
-        console.log(e)
+        console.log(e);
         if (axios.isAxiosError) {
           if (e.response.status === 409) {
             setRegError(t('errors.registration'));
@@ -65,10 +64,10 @@ const SignUpForm = () => {
           }
         } else {
           toast.error(t('errors.unknown'));
-          throw e
+          throw e;
         }
       }
-    }
+    },
   });
 
   return (
@@ -122,12 +121,11 @@ const SignUpForm = () => {
           value={formik.values.confirmPassword}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          isInvalid={(formik.errors.confirmPassword && formik.touched.confirmPassword) 
-            || !!regError
-          }
+          isInvalid={(formik.errors.confirmPassword && formik.touched.confirmPassword)
+            || !!regError}
         />
         <Form.Control.Feedback type="invalid" tooltip placement="right">
-          {!!regError ? regError : formik.errors.confirmPassword}
+          {regError || formik.errors.confirmPassword}
         </Form.Control.Feedback>
         <Form.Label htmlFor="confirmPassword">{t('regForm.confirmPassword')}</Form.Label>
       </Form.Floating>

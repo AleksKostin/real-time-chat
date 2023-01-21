@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import LoginForm from '../components/LoginForm.jsx';
 import totaLogin from '../assets/totaLogin.jpeg';
-import { useTranslation } from "react-i18next";
-
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -30,6 +29,6 @@ const LoginPage = () => {
       </div>
     </div>
   );
-}
+};
 
 export default LoginPage;

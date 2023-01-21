@@ -3,9 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Dropdown, ButtonGroup } from 'react-bootstrap';
 import { PlusSquare } from 'react-bootstrap-icons';
 import cn from 'classnames';
-import { useTranslation } from "react-i18next";
-import { selectors as channelsSelectors } from '../slices/channelsSlice.js';
-import { actions as channelsActions} from '../slices/channelsSlice.js';
+import { useTranslation } from 'react-i18next';
+import { selectors as channelsSelectors, actions as channelsActions } from '../slices/channelsSlice.js';
 import { actions as modalsActions } from '../slices/modalsSlice.js';
 
 const Channels = () => {
@@ -19,11 +18,11 @@ const Channels = () => {
     dispatch(channelsActions.setCurrentCnannelId(id));
   };
 
-  const handleAddChannel = () => { 
+  const handleAddChannel = () => {
     dispatch(modalsActions.setTypeModal({ nameModal: 'add' }));
   };
 
-  const handleRemoveChannel = (id) => { 
+  const handleRemoveChannel = (id) => {
     dispatch(modalsActions.setTypeModal({ nameModal: 'remove', channelId: id }));
   };
 
@@ -48,7 +47,7 @@ const Channels = () => {
       <ul className="nav flex-column nav-pills nav-fill px-2">
         {channels.map((channel) => (
           <li key={channel.id} className="nav-item w-100">
-            {channel.removable 
+            {channel.removable
               ? (
                 <Dropdown as={ButtonGroup} className="d-flex">
                   <Button
@@ -77,7 +76,7 @@ const Channels = () => {
                 <button
                   type="button"
                   onClick={() => handleChooseChannel(channel.id)}
-                  className={cn('w-100', 'rounded-0', 'text-start', 'btn', 'border-0',  {
+                  className={cn('w-100', 'rounded-0', 'text-start', 'btn', 'border-0', {
                     'btn-secondary': channel.id === currentChannelId,
                   })}
                 >
@@ -90,6 +89,6 @@ const Channels = () => {
       </ul>
     </div>
   );
-}
+};
 
 export default Channels;

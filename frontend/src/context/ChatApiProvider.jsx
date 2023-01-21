@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { ChatApiContext } from './index.js';
 
@@ -8,56 +8,67 @@ import { actions as messagesActions } from '../slices/messagesSlice.js';
 const ChatApiProvider = ({ socket, children }) => {
   const dispatch = useDispatch();
 
-  const sendMessage = (message) => socket.emit('newMessage', message, (response) => {
+  const sendMessage = useCallback((message) => socket.emit('newMessage', message, (response) => {
     if (response.status !== 'ok') {
       console.log(response.status);
     }
-  });
+  }), [socket]);
 
   socket.on('newMessage', (payload) => (
     dispatch(messagesActions.addMessage(payload))
   ));
 
-  const addChannel = (channel) => socket.emit('newChannel', channel, (response) => {
+  const addChannel = useCallback((channel) => socket.emit('newChannel', channel, (response) => {
     if (response.status !== 'ok') {
       console.log(response.status);
     }
     dispatch(channelsActions.setCurrentCnannelId(response.data.id));
-  });
+  }), [socket, dispatch]);
 
   socket.on('newChannel', (payload) => {
     dispatch(channelsActions.addChannel(payload));
   });
 
-  const removeChannel = (id) => socket.emit('removeChannel', id, (response) => {
+  const removeChannel = useCallback((id) => socket.emit('removeChannel', id, (response) => {
     if (response.status !== 'ok') {
       console.log(response.status);
     }
-  });
+  }), [socket]);
 
   socket.on('removeChannel', (payload) => (
     dispatch(channelsActions.removeChannel(payload))
   ));
 
-  const renameChannel = (data) => socket.emit('renameChannel', data, (response) => {
+  const renameChannel = useCallback((data) => socket.emit('renameChannel', data, (response) => {
     if (response.status !== 'ok') {
       console.log(response.status);
     }
-  });
+  }), [socket]);
 
   socket.on('renameChannel', (payload) => {
     const { id, name } = payload;
-    dispatch(channelsActions.renameChannel({ id, changes: { name }}))
+    dispatch(channelsActions.renameChannel({ id, changes: { name } }));
   });
 
-
-  return (
-    <ChatApiContext.Provider value={{
+  const value = useMemo(
+    () => ({
       sendMessage,
       addChannel,
       removeChannel,
       renameChannel,
-    }}
+    }),
+    [
+      sendMessage,
+      addChannel,
+      removeChannel,
+      renameChannel,
+    ],
+  );
+
+  return (
+    <ChatApiContext.Provider value={
+      value
+    }
     >
       {children}
     </ChatApiContext.Provider>

@@ -1,10 +1,10 @@
 import React from 'react';
-import { 
+import {
   Modal,
   Button,
 } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import { useChat } from '../../hooks/useChat.js';
@@ -16,7 +16,7 @@ const Remove = () => {
   const chat = useChat();
   const currentChannelId = useSelector((state) => state.modals.channelId);
 
-  const handleClose = () => { 
+  const handleClose = () => {
     dispatch(modalsActions.setTypeModal({ nameModal: null }));
   };
 
@@ -32,16 +32,16 @@ const Remove = () => {
         <Modal.Title>{t('modalRemove.header')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p className='lead'>{t('modalRemove.sure')}</p>
-        <div className='d-flex justify-content-end'>
+        <p className="lead">{t('modalRemove.sure')}</p>
+        <div className="d-flex justify-content-end">
           <Button
-            className='me-2'
-            variant='secondary'
+            className="me-2"
+            variant="secondary"
             onClick={() => handleClose()}
           >
             {t('modalRemove.cancel')}
           </Button>
-          <Button type='submit' variant='danger' onClick={() => handleRemove()}>
+          <Button type="submit" variant="danger" onClick={() => handleRemove()}>
             {t('modalRemove.remove')}
           </Button>
         </div>

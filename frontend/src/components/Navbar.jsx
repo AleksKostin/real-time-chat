@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth.js';
 
 const Navbar = () => {
@@ -11,8 +11,8 @@ const Navbar = () => {
     <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
       <div className="container">
         <Link className="navbar-brand" to="/">{t('navbar.logo')}</Link>
-        {!!user 
-          && 
+        {!!user
+          && (
           <button
             onClick={signOut}
             type="button"
@@ -20,10 +20,10 @@ const Navbar = () => {
           >
             {t('navbar.logOut')}
           </button>
-        }
+          )}
       </div>
     </nav>
   );
-}
+};
 
 export default Navbar;

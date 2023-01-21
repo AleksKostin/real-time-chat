@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 import { createSlice, createEntityAdapter, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { routes } from '../routes.js';
@@ -29,8 +31,8 @@ const channelsSlice = createSlice({
     removeChannel: (state, action) => {
       const { id } = action.payload;
       const currentId = state.currentChannelId;
-      channelsAdapter.removeOne(state, id)
-      state.currentChannelId = currentId === id ? defaultChannelId : currentId; 
+      channelsAdapter.removeOne(state, id);
+      state.currentChannelId = currentId === id ? defaultChannelId : currentId;
     },
     setCurrentCnannelId: (state, action) => {
       const id = action.payload;
