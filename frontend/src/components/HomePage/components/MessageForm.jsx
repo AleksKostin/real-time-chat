@@ -5,18 +5,15 @@ import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import leoProfanity from 'leo-profanity';
 
-import { useChat } from '../hooks/useChat.js';
-import { useAuth } from '../hooks/useAuth.js';
-import { selectors as channelsSelectors } from '../slices/channelsSlice.js';
+import { useChat } from '../../../context/ChatApiProvider.jsx';
+import { useAuth } from '../../../context/AuthProvider.jsx';
+import { getCurrentChannel } from '../../../selectors.js';
 
 const MessageForm = () => {
   const { t } = useTranslation();
   const chat = useChat();
   const { user } = useAuth();
-  const currentChannel = useSelector((state) => {
-    const { currentChannelId } = state.channels;
-    return channelsSelectors.selectById(state, currentChannelId);
-  });
+  const currentChannel = useSelector(getCurrentChannel);
   const inputRef = useRef();
 
   useEffect(() => {

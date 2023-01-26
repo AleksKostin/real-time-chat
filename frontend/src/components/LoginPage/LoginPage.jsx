@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import LoginForm from '../components/LoginForm.jsx';
-import totaLogin from '../assets/totaLogin.jpeg';
+import LoginForm from './components/LoginForm.jsx';
+import totaLogin from '../../assets/totaLogin.jpeg';
 
 const LoginPage = () => {
   const { t } = useTranslation();

@@ -1,9 +1,17 @@
-import React, { useMemo, useCallback } from 'react';
+import React, {
+  useMemo,
+  useCallback,
+  createContext,
+  useContext,
+} from 'react';
 import { useDispatch } from 'react-redux';
-import { ChatApiContext } from './index.js';
 
 import { actions as channelsActions } from '../slices/channelsSlice.js';
 import { actions as messagesActions } from '../slices/messagesSlice.js';
+
+const ChatApiContext = createContext({});
+
+export const useChat = () => useContext(ChatApiContext);
 
 const ChatApiProvider = ({ socket, children }) => {
   const dispatch = useDispatch();

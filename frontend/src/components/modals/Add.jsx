@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import {
@@ -11,16 +11,17 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import leoProfanity from 'leo-profanity';
 
-import { selectors as channelsSelectors } from '../../slices/channelsSlice.js';
-import { useChat } from '../../hooks/useChat.js';
+import { useChat } from '../../context/ChatApiProvider.jsx';
 import { actions as modalsActions } from '../../slices/modalsSlice.js';
+import { getAllChannels } from '../../selectors.js';
 
-const Add = () => {
+const Add = ({ show }) => {
   const { t } = useTranslation();
   const chat = useChat();
   const dispatch = useDispatch();
-  const channels = useSelector((state) => channelsSelectors.selectAll(state));
+  const channels = useSelector(getAllChannels);
   const inputRef = useRef();
+  const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
     inputRef.current.focus();
@@ -34,10 +35,10 @@ const Add = () => {
     name: yup
       .string()
       .trim()
-      .min(3, t('errors.minMaxSymbol'))
-      .max(20, t('errors.minMaxSymbol'))
-      .notOneOf(channels.map((ch) => ch.name), t('errors.unique'))
-      .required(t('errors.requared')),
+      .min(3, 'errors.minMaxSymbol')
+      .max(20, 'errors.minMaxSymbol')
+      .notOneOf(channels.map((ch) => ch.name), 'errors.unique')
+      .required('errors.requared'),
   });
 
   const formik = useFormik({
@@ -46,16 +47,21 @@ const Add = () => {
     },
     validationSchema,
     onSubmit: (values) => {
-      const newChannel = values.name;
-      const cleanName = leoProfanity.clean(newChannel, '*', 1);
-      chat.addChannel({ name: cleanName });
-      handleClose();
-      toast.success(t('modalAdd.success'));
+      try {
+        setIsFetching(true);
+        const newChannel = values.name;
+        const cleanName = leoProfanity.clean(newChannel, '*', 1);
+        chat.addChannel({ name: cleanName });
+        handleClose();
+        toast.success(t('modalAdd.success'));
+      } finally {
+        setIsFetching(false);
+      }
     },
   });
 
   return (
-    <Modal show centered onHide={() => handleClose()}>
+    <Modal show={show} centered onHide={() => handleClose()}>
       <Modal.Header closeButton>
         <Modal.Title>{t('modalAdd.header')}</Modal.Title>
       </Modal.Header>
@@ -64,16 +70,16 @@ const Add = () => {
           <Form.Control
             className="mb-2"
             name="name"
-            autoComplete="username"
             id="name"
             value={formik.values.name}
             onChange={formik.handleChange}
             isInvalid={formik.errors.name && formik.touched.name}
             ref={inputRef}
+            disabled={isFetching}
           />
           <Form.Label htmlFor="name" className="visually-hidden">{t('modalAdd.name')}</Form.Label>
           <Form.Control.Feedback type="invalid">
-            {formik.errors.name}
+            {t(formik.errors.name)}
           </Form.Control.Feedback>
           <div className="d-flex justify-content-end">
             <Button
@@ -83,7 +89,7 @@ const Add = () => {
             >
               {t('modalAdd.cancel')}
             </Button>
-            <Button type="submit" variant="primary">
+            <Button type="submit" variant="primary" disabled={isFetching}>
               {t('modalAdd.send')}
             </Button>
           </div>

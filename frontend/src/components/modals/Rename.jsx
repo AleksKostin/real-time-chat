@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Modal,
   Button,
@@ -11,20 +11,19 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import leoProfanity from 'leo-profanity';
 
-import { useChat } from '../../hooks/useChat.js';
+import { useChat } from '../../context/ChatApiProvider.jsx';
 import { actions as modalsActions } from '../../slices/modalsSlice.js';
-import { selectors as channelsSelectors } from '../../slices/channelsSlice.js';
+import { getAllChannels, getSelectChannelId } from '../../selectors.js';
 
-const Rename = () => {
+const Rename = ({ show }) => {
   const { t } = useTranslation();
+  const [isFetching, setIsFetching] = useState(false);
   const chat = useChat();
   const dispatch = useDispatch();
   const inputRef = useRef();
-  const channels = useSelector((state) => channelsSelectors.selectAll(state));
-  const currentChannelId = useSelector((state) => state.modals.channelId);
-  const currentChannel = useSelector((state) => (
-    channelsSelectors.selectById(state, currentChannelId)
-  ));
+  const channels = useSelector(getAllChannels);
+  const selectedChannelId = useSelector(getSelectChannelId);
+  const currentChannel = channels.find((channel) => channel.id === selectedChannelId);
 
   useEffect(() => {
     inputRef.current.select();
@@ -38,10 +37,10 @@ const Rename = () => {
     name: yup
       .string()
       .trim()
-      .min(3, t('errors.minMaxSymbol'))
-      .max(20, t('errors.minMaxSymbol'))
-      .notOneOf(channels.map((ch) => ch.name), t('errors.unique'))
-      .required(t('errors.requared')),
+      .min(3, 'errors.minMaxSymbol')
+      .max(20, 'errors.minMaxSymbol')
+      .notOneOf(channels.map((ch) => ch.name), 'errors.unique')
+      .required('errors.requared'),
   });
 
   const formik = useFormik({
@@ -50,16 +49,21 @@ const Rename = () => {
     },
     validationSchema,
     onSubmit: (values) => {
-      const updatedName = values.name;
-      const cleanName = leoProfanity.clean(updatedName, '*', 1);
-      chat.renameChannel({ id: currentChannelId, name: cleanName });
-      handleClose();
-      toast.success(t('modalRename.success'));
+      try {
+        setIsFetching(true);
+        const updatedName = values.name;
+        const cleanName = leoProfanity.clean(updatedName, '*', 1);
+        chat.renameChannel({ id: selectedChannelId, name: cleanName });
+        handleClose();
+        toast.success(t('modalRename.success'));
+      } finally {
+        setIsFetching(false);
+      }
     },
   });
 
   return (
-    <Modal show centered onHide={() => handleClose()}>
+    <Modal show={show} centered onHide={() => handleClose()}>
       <Modal.Header closeButton>
         <Modal.Title>{t('modalRename.header')}</Modal.Title>
       </Modal.Header>
@@ -73,10 +77,11 @@ const Rename = () => {
             onChange={formik.handleChange}
             isInvalid={formik.errors.name && formik.touched.name}
             ref={inputRef}
+            disabled={isFetching}
           />
           <Form.Label htmlFor="name" className="visually-hidden">{t('modalRename.name')}</Form.Label>
           <Form.Control.Feedback type="invalid">
-            {formik.errors.name}
+            {t(formik.errors.name)}
           </Form.Control.Feedback>
           <div className="d-flex justify-content-end">
             <Button
@@ -86,7 +91,7 @@ const Rename = () => {
             >
               {t('modalRename.cancel')}
             </Button>
-            <Button type="submit" variant="primary">
+            <Button type="submit" variant="primary" disabled={isFetching}>
               {t('modalRename.send')}
             </Button>
           </div>

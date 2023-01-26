@@ -10,6 +10,7 @@ const ru = {
       unique: 'Должно быть уникальным',
       unknown: 'Неизвестная ошибка',
       network: 'Ошибка сети',
+      authorization: 'Ошибка авторизации',
     },
     navbar: {
       logo: 'Hexlet Chat',
@@ -29,6 +30,8 @@ const ru = {
       password: 'Пароль',
       confirmPassword: 'Подтвердите пароль',
       submit: 'Зарегистрироваться',
+      haveAccount: 'Уже есть аккаунт? ',
+      login: 'Войти',
     },
     channels: {
       header: 'Каналы',

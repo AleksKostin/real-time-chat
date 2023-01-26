@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '../hooks/useAuth.js';
+import { useAuth } from '../../context/AuthProvider.jsx';
 
 const Navbar = () => {
   const { t } = useTranslation();
 
   const { user, signOut } = useAuth();
+
   return (
     <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
       <div className="container">

@@ -1,5 +1,13 @@
-import React, { useState, useMemo } from 'react';
-import { AuthContext } from './index.js';
+import React, {
+  useState,
+  useMemo,
+  createContext,
+  useContext,
+} from 'react';
+
+const AuthContext = createContext({});
+
+export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({ children }) => {
   const currentUser = JSON.parse(localStorage.getItem('user'));
@@ -15,16 +23,23 @@ const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const getTokenHeader = () => {
+    const dataUser = JSON.parse(localStorage.getItem('user'));
+    if (dataUser && dataUser.token) {
+      return { Authorization: `Bearer ${dataUser.token}` };
+    }
+    return {};
+  };
+
   const value = useMemo(
     () => ({
       user,
-      setUser,
       signIn,
       signOut,
+      getTokenHeader,
     }),
     [
       user,
-      setUser,
     ],
   );
 

@@ -3,18 +3,16 @@ import { useSelector } from 'react-redux';
 import { animateScroll } from 'react-scroll';
 import { useTranslation } from 'react-i18next';
 
-import { selectors as channelsSelectors } from '../slices/channelsSlice.js';
-import { selectors as messagesSelectors } from '../slices/messagesSlice.js';
 import MessageForm from './MessageForm.jsx';
+import {
+  getCurrentChannel,
+  getCurrentMessages,
+} from '../../../selectors.js';
 
 const Messages = () => {
   const { t } = useTranslation();
-  const currentChannelId = useSelector((state) => state.channels.currentChannelId);
-  const currentChannel = useSelector((state) => (
-    channelsSelectors.selectById(state, currentChannelId)
-  ));
-  const allMessages = useSelector((state) => messagesSelectors.selectAll(state));
-  const currentMessages = allMessages.filter((m) => m.channelId === currentChannelId);
+  const currentChannel = useSelector(getCurrentChannel);
+  const currentMessages = useSelector(getCurrentMessages);
 
   useEffect(() => {
     animateScroll.scrollToBottom({ containerId: 'messages-box', delay: 0, duration: 0 });

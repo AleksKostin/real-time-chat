@@ -7,12 +7,13 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { routes } from '../routes.js';
-import { useAuth } from '../hooks/useAuth.js';
+import { routes } from '../../../routes.js';
+import { useAuth } from '../../../context/AuthProvider.jsx';
 
 const LoginForm = () => {
   const { t } = useTranslation();
   const [isValid, setIsValid] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const { signIn } = useAuth();
   const navigate = useNavigate();
   const inputRef = useRef();
@@ -36,6 +37,7 @@ const LoginForm = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
+        setIsFetching(true);
         const response = await axios.post(routes.loginPath(), values);
         signIn(response.data);
         navigate('/');
@@ -51,6 +53,8 @@ const LoginForm = () => {
           toast.error(t('errors.unknown'));
           throw e;
         }
+      } finally {
+        setIsFetching(false);
       }
     },
   });
@@ -68,6 +72,7 @@ const LoginForm = () => {
           value={formik.values.username}
           onChange={formik.handleChange}
           ref={inputRef}
+          disabled={isFetching}
         />
         <label htmlFor="username">{t('logForm.username')}</label>
       </div>
@@ -82,6 +87,7 @@ const LoginForm = () => {
           className={inputFieldsClass}
           value={formik.values.password}
           onChange={formik.handleChange}
+          disabled={isFetching}
         />
         <label className="form-label" htmlFor="password">{t('logForm.password')}</label>
         {!isValid
@@ -93,6 +99,7 @@ const LoginForm = () => {
       <button
         type="submit"
         className="w-100 mb-3 btn btn-outline-primary"
+        disabled={isFetching}
       >
         {t('logForm.submit')}
       </button>

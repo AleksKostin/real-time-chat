@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth.js';
+import { useAuth } from '../context/AuthProvider.jsx';
 
 const RequareAuth = ({ children }) => {
   const { user } = useAuth();

@@ -1,7 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import totaRegistration from '../assets/totaRegistration.jpeg';
-import SignUpForm from '../components/SignUpForm.jsx';
+import totaRegistration from '../../assets/totaRegistration.jpeg';
+import SignUpForm from './components/SignUpForm.jsx';
 
 const SignUpPage = () => {
   const { t } = useTranslation();
@@ -16,6 +17,12 @@ const SignUpPage = () => {
                 <img src={totaRegistration} className="rounded-circle" alt={t('regForm.header')} />
               </div>
               <SignUpForm />
+            </div>
+            <div className="card-footer p-4">
+              <div className="text-center">
+                <span>{t('regForm.haveAccount')}</span>
+                <Link to="/login">{t('regForm.login')}</Link>
+              </div>
             </div>
           </div>
         </div>

@@ -10,31 +10,32 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import { useNavigate } from 'react-router-dom';
-import { routes } from '../routes.js';
-import { useAuth } from '../hooks/useAuth.js';
+import { routes } from '../../../routes.js';
+import { useAuth } from '../../../context/AuthProvider.jsx';
 
 const SignUpForm = () => {
   const { t } = useTranslation();
   const { signIn } = useAuth();
   const navigate = useNavigate();
+  const [isFetching, setIsFetching] = useState(false);
   const [regError, setRegError] = useState(false);
 
   const validationSchema = yup.object().shape({
     username: yup
       .string()
       .trim()
-      .min(3, t('errors.minMaxSymbol'))
-      .max(20, t('errors.minMaxSymbol'))
-      .required(t('errors.requared')),
+      .min(3, 'errors.minMaxSymbol')
+      .max(20, 'errors.minMaxSymbol')
+      .required('errors.requared'),
     password: yup
       .string()
       .trim()
-      .min(6, t('errors.minSymbol'))
-      .required(t('errors.requared')),
+      .min(6, 'errors.minSymbol')
+      .required('errors.requared'),
     confirmPassword: yup
       .string()
       .trim()
-      .oneOf([yup.ref('password'), null], t('errors.confirmPassword')),
+      .oneOf([yup.ref('password'), null], 'errors.confirmPassword'),
   });
 
   const formik = useFormik({
@@ -46,6 +47,7 @@ const SignUpForm = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
+        setIsFetching(true);
         setRegError(false);
         const newUser = {
           username: values.username,
@@ -66,6 +68,8 @@ const SignUpForm = () => {
           toast.error(t('errors.unknown'));
           throw e;
         }
+      } finally {
+        setIsFetching(false);
       }
     },
   });
@@ -84,11 +88,12 @@ const SignUpForm = () => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           isInvalid={(formik.errors.username && formik.touched.username) || !!regError}
+          disabled={isFetching}
           autoFocus
         />
         <Form.Label htmlFor="username">{t('regForm.username')}</Form.Label>
         <Form.Control.Feedback type="invalid" tooltip placement="right">
-          {formik.errors.username}
+          {t(formik.errors.username)}
         </Form.Control.Feedback>
       </Form.Floating>
       <Form.Floating className="mb-3">
@@ -104,9 +109,10 @@ const SignUpForm = () => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           isInvalid={(formik.errors.password && formik.touched.password) || !!regError}
+          disabled={isFetching}
         />
         <Form.Control.Feedback type="invalid" tooltip placement="right">
-          {formik.errors.password}
+          {t(formik.errors.password)}
         </Form.Control.Feedback>
         <Form.Label htmlFor="password">{t('regForm.password')}</Form.Label>
       </Form.Floating>
@@ -121,15 +127,16 @@ const SignUpForm = () => {
           value={formik.values.confirmPassword}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          disabled={isFetching}
           isInvalid={(formik.errors.confirmPassword && formik.touched.confirmPassword)
             || !!regError}
         />
         <Form.Control.Feedback type="invalid" tooltip placement="right">
-          {regError || formik.errors.confirmPassword}
+          {regError || t(formik.errors.confirmPassword)}
         </Form.Control.Feedback>
         <Form.Label htmlFor="confirmPassword">{t('regForm.confirmPassword')}</Form.Label>
       </Form.Floating>
-      <Button type="submit" variant="outline-primary" className="w-100">
+      <Button type="submit" variant="outline-primary" className="w-100" disabled={isFetching}>
         {t('regForm.submit')}
       </Button>
     </Form>

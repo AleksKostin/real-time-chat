@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import totaNotFound from '../assets/totaNotFound.svg';
+import totaNotFound from '../../assets/totaNotFound.svg';
 
 const NotFoundPage = () => {
   const { t } = useTranslation();

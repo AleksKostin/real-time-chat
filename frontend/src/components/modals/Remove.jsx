@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Modal,
   Button,
@@ -7,27 +7,34 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { useChat } from '../../hooks/useChat.js';
+import { useChat } from '../../context/ChatApiProvider.jsx';
 import { actions as modalsActions } from '../../slices/modalsSlice.js';
+import { getSelectChannelId } from '../../selectors.js';
 
-const Remove = () => {
+const Remove = ({ show }) => {
   const { t } = useTranslation();
+  const [isFetching, setIsFetching] = useState(false);
   const dispatch = useDispatch();
   const chat = useChat();
-  const currentChannelId = useSelector((state) => state.modals.channelId);
+  const selectedChannelId = useSelector(getSelectChannelId);
 
   const handleClose = () => {
     dispatch(modalsActions.setTypeModal({ nameModal: null }));
   };
 
   const handleRemove = () => {
-    chat.removeChannel({ id: currentChannelId });
-    dispatch(modalsActions.setTypeModal({ nameModal: null }));
-    toast.success(t('modalRemove.success'));
+    try {
+      setIsFetching(true);
+      chat.removeChannel({ id: selectedChannelId });
+      dispatch(modalsActions.setTypeModal({ nameModal: null }));
+      toast.success(t('modalRemove.success'));
+    } finally {
+      setIsFetching(false);
+    }
   };
 
   return (
-    <Modal show centered onHide={() => handleClose()}>
+    <Modal show={show} centered onHide={() => handleClose()}>
       <Modal.Header closeButton>
         <Modal.Title>{t('modalRemove.header')}</Modal.Title>
       </Modal.Header>
@@ -41,7 +48,12 @@ const Remove = () => {
           >
             {t('modalRemove.cancel')}
           </Button>
-          <Button type="submit" variant="danger" onClick={() => handleRemove()}>
+          <Button
+            type="submit"
+            variant="danger"
+            onClick={() => handleRemove()}
+            disabled={isFetching}
+          >
             {t('modalRemove.remove')}
           </Button>
         </div>

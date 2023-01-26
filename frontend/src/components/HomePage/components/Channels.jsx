@@ -4,15 +4,19 @@ import { Button, Dropdown, ButtonGroup } from 'react-bootstrap';
 import { PlusSquare } from 'react-bootstrap-icons';
 import cn from 'classnames';
 import { useTranslation } from 'react-i18next';
-import { selectors as channelsSelectors, actions as channelsActions } from '../slices/channelsSlice.js';
-import { actions as modalsActions } from '../slices/modalsSlice.js';
+
+import {
+  actions as channelsActions,
+} from '../../../slices/channelsSlice.js';
+import { actions as modalsActions } from '../../../slices/modalsSlice.js';
+import { getAllChannels, getCurrentChannelId } from '../../../selectors.js';
 
 const Channels = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const channels = useSelector((state) => channelsSelectors.selectAll(state));
-  const currentChannelId = useSelector((state) => state.channels.currentChannelId);
+  const channels = useSelector(getAllChannels);
+  const currentChannelId = useSelector(getCurrentChannelId);
 
   const handleChooseChannel = (id) => {
     dispatch(channelsActions.setCurrentCnannelId(id));

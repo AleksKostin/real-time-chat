@@ -8,6 +8,6 @@ const modals = {
   remove: Remove,
 };
 
-const getTypeModal = (nameType) => modals[nameType];
+const setTypeModal = (nameType) => modals[nameType];
 
-export default getTypeModal;
+export default setTypeModal;
