@@ -1,5 +1,5 @@
 start:
-	npx start-server & npm -C frontend start
+	npx start-server & make -C frontend start
 
 install:
 	npm ci

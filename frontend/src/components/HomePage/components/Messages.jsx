@@ -4,10 +4,8 @@ import { animateScroll } from 'react-scroll';
 import { useTranslation } from 'react-i18next';
 
 import MessageForm from './MessageForm.jsx';
-import {
-  getCurrentChannel,
-  getCurrentMessages,
-} from '../../../selectors.js';
+import { getCurrentChannel } from '../../../slices/channelsSlice.js';
+import { getCurrentMessages } from '../../../slices/messagesSlice.js';
 
 const Messages = () => {
   const { t } = useTranslation();

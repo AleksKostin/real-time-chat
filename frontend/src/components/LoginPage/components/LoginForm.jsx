@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
@@ -12,8 +12,6 @@ import { useAuth } from '../../../context/AuthProvider.jsx';
 
 const LoginForm = () => {
   const { t } = useTranslation();
-  const [isValid, setIsValid] = useState(true);
-  const [isFetching, setIsFetching] = useState(false);
   const { signIn } = useAuth();
   const navigate = useNavigate();
   const inputRef = useRef();
@@ -27,25 +25,21 @@ const LoginForm = () => {
     password: yup.string().trim(),
   });
 
-  const inputFieldsClass = cn('form-control', !isValid && 'is-invalid');
-
   const formik = useFormik({
     initialValues: {
       username: '',
       password: '',
     },
     validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { setStatus }) => {
       try {
-        setIsFetching(true);
         const response = await axios.post(routes.loginPath(), values);
         signIn(response.data);
-        navigate('/');
+        navigate(routes.homePage());
       } catch (e) {
-        console.log(e);
         if (axios.isAxiosError) {
           if (e.response.status === 401) {
-            setIsValid(false);
+            setStatus(true);
           } else {
             toast.error(t('errors.network'));
           }
@@ -53,11 +47,12 @@ const LoginForm = () => {
           toast.error(t('errors.unknown'));
           throw e;
         }
-      } finally {
-        setIsFetching(false);
       }
     },
   });
+
+  const inputFieldsClass = cn('form-control', formik.status && 'is-invalid');
+
   return (
     <form className="col-12 col-md-6 mt-3 mt-mb-0" onSubmit={formik.handleSubmit}>
       <h1 className="text-center mb-4">{t('logForm.header')}</h1>
@@ -72,7 +67,7 @@ const LoginForm = () => {
           value={formik.values.username}
           onChange={formik.handleChange}
           ref={inputRef}
-          disabled={isFetching}
+          disabled={formik.isSubmitting}
         />
         <label htmlFor="username">{t('logForm.username')}</label>
       </div>
@@ -87,10 +82,10 @@ const LoginForm = () => {
           className={inputFieldsClass}
           value={formik.values.password}
           onChange={formik.handleChange}
-          disabled={isFetching}
+          disabled={formik.isSubmitting}
         />
         <label className="form-label" htmlFor="password">{t('logForm.password')}</label>
-        {!isValid
+        {formik.status
           ? (
             <div className="invalid-tooltip">{t('errors.auth')}</div>
           )
@@ -99,7 +94,7 @@ const LoginForm = () => {
       <button
         type="submit"
         className="w-100 mb-3 btn btn-outline-primary"
-        disabled={isFetching}
+        disabled={formik.isSubmitting}
       >
         {t('logForm.submit')}
       </button>

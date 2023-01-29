@@ -14,12 +14,13 @@ import HomePage from '../HomePage/HomePage.jsx';
 import LoginPage from '../LoginPage/LoginPage.jsx';
 import NotFoundPage from '../NotFoundPage/NotFoundPage.jsx';
 import SignUpPage from '../SignUpPage/SignUpPage.jsx';
-import { useUi } from '../../context/UiProvider.jsx';
 import setTypeModal from '../modals/index.js';
-import { getTypeModal } from '../../selectors.js';
+import { getTypeModal } from '../../slices/modalsSlice.js';
+import { getLoadingStatus } from '../../slices/channelsSlice.js';
+import { routes } from '../../routes.js';
 
 const App = () => {
-  const { isLoading } = useUi();
+  const loadingStatus = useSelector(getLoadingStatus);
   const typeModal = useSelector(getTypeModal);
 
   const renderModal = () => {
@@ -31,10 +32,10 @@ const App = () => {
     <AuthProvider>
       <BrowserRouter>
         <div className="d-flex flex-column h-100">
-          {!isLoading && <Navbar />}
+          {loadingStatus === 'idle' && <Navbar />}
           <Routes>
             <Route
-              path="/"
+              path={routes.homePage()}
               element={(
                 <RequareAuth>
                   <HomePage />
@@ -42,7 +43,7 @@ const App = () => {
             )}
             />
             <Route
-              path="/login"
+              path={routes.loginPage()}
               element={(
                 <RequareAuth>
                   <LoginPage />
@@ -50,7 +51,7 @@ const App = () => {
             )}
             />
             <Route
-              path="/signup"
+              path={routes.signUpPage()}
               element={(
                 <RequareAuth>
                   <SignUpPage />

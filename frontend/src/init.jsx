@@ -7,7 +7,6 @@ import { Provider as RollbarProvider, ErrorBoundary } from '@rollbar/react';
 
 import store from './slices/index.js';
 import ChatApiProvider from './context/ChatApiProvider.jsx';
-import UiProvider from './context/UiProvider.jsx';
 import App from './components/common-components/App.jsx';
 import resources from './locales/index.js';
 import rollbarConfig from './rollbarConfig.js';
@@ -32,9 +31,7 @@ const init = async (socket) => {
         <Provider store={store}>
           <ChatApiProvider socket={socket}>
             <I18nextProvider i18n={i18n}>
-              <UiProvider>
-                <App />
-              </UiProvider>
+              <App />
             </I18nextProvider>
           </ChatApiProvider>
         </Provider>

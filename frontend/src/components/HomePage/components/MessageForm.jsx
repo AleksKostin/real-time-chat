@@ -7,7 +7,7 @@ import leoProfanity from 'leo-profanity';
 
 import { useChat } from '../../../context/ChatApiProvider.jsx';
 import { useAuth } from '../../../context/AuthProvider.jsx';
-import { getCurrentChannel } from '../../../selectors.js';
+import { getCurrentChannel } from '../../../slices/channelsSlice.js';
 
 const MessageForm = () => {
   const { t } = useTranslation();

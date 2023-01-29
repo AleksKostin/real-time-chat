@@ -12,8 +12,8 @@ import { toast } from 'react-toastify';
 import leoProfanity from 'leo-profanity';
 
 import { useChat } from '../../context/ChatApiProvider.jsx';
-import { actions as modalsActions } from '../../slices/modalsSlice.js';
-import { getAllChannels, getSelectChannelId } from '../../selectors.js';
+import { actions as modalsActions, getSelectChannelId } from '../../slices/modalsSlice.js';
+import { getAllChannels } from '../../slices/channelsSlice.js';
 
 const Rename = ({ show }) => {
   const { t } = useTranslation();
@@ -54,10 +54,10 @@ const Rename = ({ show }) => {
         const updatedName = values.name;
         const cleanName = leoProfanity.clean(updatedName, '*', 1);
         chat.renameChannel({ id: selectedChannelId, name: cleanName });
-        handleClose();
-        toast.success(t('modalRename.success'));
       } finally {
         setIsFetching(false);
+        handleClose();
+        toast.success(t('modalRename.success'));
       }
     },
   });

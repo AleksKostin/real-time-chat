@@ -7,9 +7,10 @@ import { useTranslation } from 'react-i18next';
 
 import {
   actions as channelsActions,
+  getAllChannels,
+  getCurrentChannelId,
 } from '../../../slices/channelsSlice.js';
 import { actions as modalsActions } from '../../../slices/modalsSlice.js';
-import { getAllChannels, getCurrentChannelId } from '../../../selectors.js';
 
 const Channels = () => {
   const { t } = useTranslation();

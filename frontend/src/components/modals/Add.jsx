@@ -13,7 +13,7 @@ import leoProfanity from 'leo-profanity';
 
 import { useChat } from '../../context/ChatApiProvider.jsx';
 import { actions as modalsActions } from '../../slices/modalsSlice.js';
-import { getAllChannels } from '../../selectors.js';
+import { getAllChannels } from '../../slices/channelsSlice.js';
 
 const Add = ({ show }) => {
   const { t } = useTranslation();
@@ -52,10 +52,10 @@ const Add = ({ show }) => {
         const newChannel = values.name;
         const cleanName = leoProfanity.clean(newChannel, '*', 1);
         chat.addChannel({ name: cleanName });
-        handleClose();
-        toast.success(t('modalAdd.success'));
       } finally {
         setIsFetching(false);
+        handleClose();
+        toast.success(t('modalAdd.success'));
       }
     },
   });

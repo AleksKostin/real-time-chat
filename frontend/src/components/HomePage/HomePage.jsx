@@ -1,57 +1,47 @@
 import React, { useEffect } from 'react';
 import { Spinner } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-
-import axios from 'axios';
 
 import Channels from './components/Channels.jsx';
 import Messages from './components/Messages.jsx';
-import { routes } from '../../routes.js';
 import { useAuth } from '../../context/AuthProvider.jsx';
-import { actions as channelsActions } from '../../slices/channelsSlice.js';
-import { actions as messagesActions } from '../../slices/messagesSlice.js';
-import { useUi } from '../../context/UiProvider.jsx';
+import {
+  getLoadingStatus,
+  getFetchError,
+  fetchData,
+  actions,
+} from '../../slices/channelsSlice.js';
 
 const HomePage = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { getTokenHeader, signOut } = useAuth();
-  const { isLoading, setLoading } = useUi();
+  const fetchError = useSelector(getFetchError);
+  const loadingStatus = useSelector(getLoadingStatus);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(routes.dataPath(), { headers: getTokenHeader() });
-        dispatch(channelsActions.setInitialState(response.data));
-        dispatch(messagesActions.setInitialState(response.data));
-      } catch (e) {
-        if (axios.isAxiosError) {
-          if (e.response.status === 401) {
-            signOut();
-            navigate('/');
-            toast.error(t('errors.authorization'));
-          } else {
-            toast.error(t('errors.network'));
-          }
-        } else {
-          toast.error(t('errors.unknown'));
-          throw e;
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    dispatch(fetchData(getTokenHeader()));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    if (fetchError === 'errors.authorization') {
+      signOut();
+      toast.error(t(fetchError));
+    } else if (fetchError === 'errors.network') {
+      toast.error(t(fetchError));
+    } else if (fetchError === 'errors.unknown') {
+      toast.error(t(fetchError));
+    }
+
+    return () => {
+      dispatch(actions.refreshFailedState());
+    };
+  }, [fetchError]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
-    isLoading
+    loadingStatus !== 'idle'
       ? (
         <div className="justify-content-center align-self-center flex-column h-100 d-flex">
           <Spinner animation="grow" variant="secondary">

@@ -8,8 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
 import { useChat } from '../../context/ChatApiProvider.jsx';
-import { actions as modalsActions } from '../../slices/modalsSlice.js';
-import { getSelectChannelId } from '../../selectors.js';
+import { actions as modalsActions, getSelectChannelId } from '../../slices/modalsSlice.js';
 
 const Remove = ({ show }) => {
   const { t } = useTranslation();
@@ -26,10 +25,10 @@ const Remove = ({ show }) => {
     try {
       setIsFetching(true);
       chat.removeChannel({ id: selectedChannelId });
-      dispatch(modalsActions.setTypeModal({ nameModal: null }));
-      toast.success(t('modalRemove.success'));
     } finally {
       setIsFetching(false);
+      dispatch(modalsActions.setTypeModal({ nameModal: null }));
+      toast.success(t('modalRemove.success'));
     }
   };
 

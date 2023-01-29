@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Button,
   Form,
@@ -17,8 +17,6 @@ const SignUpForm = () => {
   const { t } = useTranslation();
   const { signIn } = useAuth();
   const navigate = useNavigate();
-  const [isFetching, setIsFetching] = useState(false);
-  const [regError, setRegError] = useState(false);
 
   const validationSchema = yup.object().shape({
     username: yup
@@ -45,22 +43,19 @@ const SignUpForm = () => {
       confirmPassword: '',
     },
     validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { setStatus }) => {
       try {
-        setIsFetching(true);
-        setRegError(false);
         const newUser = {
           username: values.username,
           password: values.password,
         };
         const response = await axios.post(routes.signUpPath(), newUser);
         signIn(response.data);
-        navigate('/');
+        navigate(routes.homePage());
       } catch (e) {
-        console.log(e);
         if (axios.isAxiosError) {
           if (e.response.status === 409) {
-            setRegError(t('errors.registration'));
+            setStatus('errors.registration');
           } else {
             toast.error(t('errors.network'));
           }
@@ -68,8 +63,6 @@ const SignUpForm = () => {
           toast.error(t('errors.unknown'));
           throw e;
         }
-      } finally {
-        setIsFetching(false);
       }
     },
   });
@@ -87,8 +80,8 @@ const SignUpForm = () => {
           value={formik.values.username}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          isInvalid={(formik.errors.username && formik.touched.username) || !!regError}
-          disabled={isFetching}
+          isInvalid={(formik.errors.username && formik.touched.username) || !!formik.status}
+          disabled={formik.isSubmitting}
           autoFocus
         />
         <Form.Label htmlFor="username">{t('regForm.username')}</Form.Label>
@@ -108,8 +101,8 @@ const SignUpForm = () => {
           value={formik.values.password}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          isInvalid={(formik.errors.password && formik.touched.password) || !!regError}
-          disabled={isFetching}
+          isInvalid={(formik.errors.password && formik.touched.password) || !!formik.status}
+          disabled={formik.isSubmitting}
         />
         <Form.Control.Feedback type="invalid" tooltip placement="right">
           {t(formik.errors.password)}
@@ -127,16 +120,21 @@ const SignUpForm = () => {
           value={formik.values.confirmPassword}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          disabled={isFetching}
+          disabled={formik.isSubmitting}
           isInvalid={(formik.errors.confirmPassword && formik.touched.confirmPassword)
-            || !!regError}
+            || !!formik.status}
         />
         <Form.Control.Feedback type="invalid" tooltip placement="right">
-          {regError || t(formik.errors.confirmPassword)}
+          {t(formik.status) || t(formik.errors.confirmPassword)}
         </Form.Control.Feedback>
         <Form.Label htmlFor="confirmPassword">{t('regForm.confirmPassword')}</Form.Label>
       </Form.Floating>
-      <Button type="submit" variant="outline-primary" className="w-100" disabled={isFetching}>
+      <Button
+        type="submit"
+        variant="outline-primary"
+        className="w-100"
+        disabled={formik.isSubmitting}
+      >
         {t('regForm.submit')}
       </Button>
     </Form>

@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+
 import totaRegistration from '../../assets/totaRegistration.jpeg';
 import SignUpForm from './components/SignUpForm.jsx';
+import { routes } from '../../routes.js';
 
 const SignUpPage = () => {
   const { t } = useTranslation();
@@ -21,7 +23,7 @@ const SignUpPage = () => {
             <div className="card-footer p-4">
               <div className="text-center">
                 <span>{t('regForm.haveAccount')}</span>
-                <Link to="/login">{t('regForm.login')}</Link>
+                <Link to={routes.loginPage()}>{t('regForm.login')}</Link>
               </div>
             </div>
           </div>
