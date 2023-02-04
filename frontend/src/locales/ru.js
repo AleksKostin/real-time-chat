@@ -13,7 +13,7 @@ const ru = {
       authorization: 'Ошибка авторизации',
     },
     navbar: {
-      logo: 'Hexlet Chat',
+      logo: 'Chat',
       logOut: 'Выйти',
     },
     logForm: {
